@@ -1,0 +1,8 @@
+redis
+pyarrow
+aiokafka
+confluent_kafka
+google-auth==2.21.0
+gcsfs
+s3fs==2022.11.0
+adlfs
