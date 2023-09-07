@@ -5,8 +5,6 @@ services:
     image: python/datasim/superhero
     environment:
       - REDIS_HOST=redis
-    env_file:
-      - ../env/gcp.env
     command: ["python", "build_db.py"]
     depends_on:
       - redis
@@ -20,10 +18,11 @@ services:
       - REDIS_HOST=redis
       - KAFKA_HOST=kafka
       - WORKER_CHANNEL=lib.server.game
-      - OUTPUT_DIR=gs://datasim-superhero-dataflow-raw
+      - OUTPUT_DIR=gs://${OUTPUT_DIR:-datasim-superhero-dataflow-raw}
       - OUTPUT_FS=GCP
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-datasim-example-project-001}
     env_file:
-      - ../env/gcp.env
+      - ../env/kafka.env
     command: ["python", "worker_lib_server_game.py"]
     volumes:
       - ~/.config/gcloud:/root/.config/gcloud/
@@ -36,10 +35,11 @@ services:
       - REDIS_HOST=redis
       - KAFKA_HOST=kafka
       - WORKER_CHANNEL=lib.server.lobby
-      - OUTPUT_DIR=gs://datasim-superhero-dataflow-raw
+      - OUTPUT_DIR=gs://${OUTPUT_DIR:-datasim-superhero-dataflow-raw}
       - OUTPUT_FS=GCP
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-datasim-example-project-001}
     env_file:
-      - ../env/gcp.env
+      - ../env/kafka.env
     command: ["python", "worker_lib_server_lobby.py"]
     volumes:
       - ~/.config/gcloud:/root/.config/gcloud/
@@ -55,7 +55,7 @@ services:
       - KAFKA_HOST=kafka
       - LOGGER_MODULE=kafka
     env_file:
-      - ../env/gcp.env
+      - ../env/kafka.env
     depends_on:
       - redis
     expose:
@@ -76,7 +76,7 @@ services:
   superhero_nginx:
     image: python/datasim/superhero/nginx
     env_file:
-      - ../env/gcp.env
+      - ../env/kafka.env
     depends_on:
       - superhero_server
     ports:
@@ -87,7 +87,7 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     env_file:
-      - ../env/gcp.env
+      - ../env/kafka.env
     ports:
       - '${REDIS_PORT}:${REDIS_PORT}'
     volumes:
@@ -137,7 +137,7 @@ services:
     environment:
       - KAFKA_HOST=kafka
     env_file:
-      - ../env/gcp.env
+      - ../env/kafka.env
     command: ["python", "./lib/utils/kafka/config.py"]
     depends_on:
       - kafka

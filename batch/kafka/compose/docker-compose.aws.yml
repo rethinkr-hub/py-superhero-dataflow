@@ -1,12 +1,10 @@
-version: '2'
+version: '3'
 
 services:
   build_db:
     image: python/datasim/superhero
     environment:
       - REDIS_HOST=redis
-    env_file:
-      - ../env/aws.env
     command: ["python", "build_db.py"]
     depends_on:
       - redis
@@ -20,12 +18,13 @@ services:
       - REDIS_HOST=redis
       - KAFKA_HOST=kafka
       - WORKER_CHANNEL=lib.server.game
-      - OUTPUT_DIR=s3://datasim-superhero-dataflow-raw
+      - OUTPUT_DIR=s3://${OUTPUT_DIR:-datasim-superhero-dataflow-raw}
       - OUTPUT_FS=AWS
+      - AWS_PROFILE=${AWS_PROFILE:-datasim-profile}
       - AWS_CONFIG_FILE=/tmp/configs/aws_config
       - AWS_SHARED_CREDENTIALS_FILE=/tmp/keys/aws_creds
     env_file:
-      - ../env/aws.env
+      - ../env/kafka.env
     command: ["python", "worker_lib_server_game.py"]
     volumes:
       - ~/.aws/credentials:/tmp/keys/aws_creds
@@ -39,12 +38,13 @@ services:
       - REDIS_HOST=redis
       - KAFKA_HOST=kafka
       - WORKER_CHANNEL=lib.server.lobby
-      - OUTPUT_DIR=s3://datasim-superhero-dataflow-raw
+      - OUTPUT_DIR=s3://${OUTPUT_DIR:-datasim-superhero-dataflow-raw}
       - OUTPUT_FS=AWS
+      - AWS_PROFILE=${AWS_PROFILE:-datasim-profile}
       - AWS_CONFIG_FILE=/tmp/configs/aws_config
       - AWS_SHARED_CREDENTIALS_FILE=/tmp/keys/aws_creds
     env_file:
-      - ../env/aws.env
+      - ../env/kafka.env
     command: ["python", "worker_lib_server_lobby.py"]
     volumes:
       - ~/.aws/credentials:/tmp/keys/aws_creds
@@ -61,7 +61,7 @@ services:
       - KAFKA_HOST=kafka
       - LOGGER_MODULE=kafka
     env_file:
-      - ../env/aws.env
+      - ../env/kafka.env
     depends_on:
       - redis
     expose:
@@ -82,7 +82,7 @@ services:
   superhero_nginx:
     image: python/datasim/superhero/nginx
     env_file:
-      - ../env/aws.env
+      - ../env/kafka.env
     depends_on:
       - superhero_server
     ports:
@@ -93,7 +93,7 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     env_file:
-      - ../env/aws.env
+      - ../env/kafka.env
     ports:
       - '${REDIS_PORT}:${REDIS_PORT}'
     volumes:
@@ -143,7 +143,7 @@ services:
     environment:
       - KAFKA_HOST=kafka
     env_file:
-      - ../env/aws.env
+      - ../env/kafka.env
     command: ["python", "./lib/utils/kafka/config.py"]
     depends_on:
       - kafka

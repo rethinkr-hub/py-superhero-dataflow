@@ -237,7 +237,7 @@ def validate_lib_server_lobby(f):
             assert('timestamp' in r and isinstance(datetime.datetime.strptime(r['timestamp'], '%Y-%m-%dT%H:%M:%S.%f'), datetime.datetime))
             assert('game_token' in r and isinstance(r['game_token'], str))
             assert('user_token' in r and  isinstance(r['user_token'], str))
-            assert('superhero_id' in r and isinstance(r['superhero_id'], str))
+            assert('superhero_id' in r and isinstance(r['superhero_id'], int))
             assert('superhero_attack' in r and isinstance(r['superhero_attack'], int))
             assert('superhero_health' in r and isinstance(r['superhero_health'], int))
         

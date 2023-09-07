@@ -13,7 +13,9 @@ the credentials of another Service Account which is IP Bound to the development 
 to reduce the risk of comprimization.
 */
 provider "aws" {
-  alias = "accountgen"
+  alias   = "accountgen"
+  profile = var.aws_cli_profile
+  region  = var.aws_region
 }
 
 /* Create and Authenticate Service Account Session
@@ -56,9 +58,12 @@ to deploy the required infra for Superhero Simulator Dataflow
 */
 provider "aws" {
   alias       = "auth_session"
-  region      = var.aws_region
   access_key  = module.service_account_auth.access_id
   secret_key  = module.service_account_auth.access_token
+  // An ambiguous error is thrown without declaring a profile
+  // However, access_key/secret_key override profile credentials
+  profile = var.aws_cli_profile
+  region  = var.aws_region
 }
 
 /* Create Superhero Simulator Dataflow Buckets

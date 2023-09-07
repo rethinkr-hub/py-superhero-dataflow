@@ -15,17 +15,22 @@ terraform{
 }
 
 data "aws_iam_user" "this" {
+  provider = aws.auth_session
+
   user_name = var.contributor_user
 }
 
 resource "aws_iam_group" "this" {
+  provider = aws.auth_session
+
   name = var.group_prefix
   path = "/groups/"
 }
 
 resource "aws_iam_group_membership" "this" {
-  name = "${var.group_prefix}-membership"
+  provider = aws.auth_session
 
+  name  = "${var.group_prefix}-membership"
   users = [
     data.aws_iam_user.this.user_name,
   ]
@@ -55,10 +60,12 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_group_policy" "this" {
-  name  = "${var.group_prefix}-policy"
-  group = aws_iam_group.this.name
+  provider = aws.auth_session
+  
+  name     = "${var.group_prefix}-policy"
+  group    = aws_iam_group.this.name
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
-  policy = data.aws_iam_policy_document.this.json
+  policy   = data.aws_iam_policy_document.this.json
 }

@@ -16,7 +16,7 @@ terraform{
 }
 
 /* Create bew Service Account */
-resource "aws_iam_user" "new-service-account" {
+resource "aws_iam_user" "this" {
   provider = aws.accountgen
 
   name     = var.new_service_account_name
@@ -29,7 +29,7 @@ required infra.
 
 https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-create-and-attach-iam-policy.html
 */
-data "aws_iam_policy_document" "service-account-policy-doc" {
+data "aws_iam_policy_document" "this" {
   provider = aws.accountgen
 
   statement {
@@ -38,6 +38,8 @@ data "aws_iam_policy_document" "service-account-policy-doc" {
     actions   = var.bootstrap_iam_roles
     resources = ["*"]
   }
+
+  depends_on = [ aws_iam_user.this ]
 }
 
 /* Bind Policy
@@ -45,12 +47,12 @@ data "aws_iam_policy_document" "service-account-policy-doc" {
 Binds the minimum privilidge policy with the newly 
 created Service Account
 */
-resource "aws_iam_user_policy" "new-service-account" {
+resource "aws_iam_user_policy" "this" {
   provider = aws.accountgen
 
   name     = "${var.policy_prefix}UserPolicy"
-  user     = aws_iam_user.new-service-account.name
-  policy   = data.aws_iam_policy_document.service-account-policy-doc.json
+  user     = aws_iam_user.this.name
+  policy   = data.aws_iam_policy_document.this.json
 }
 
 /* Generate Service Key 
@@ -58,15 +60,15 @@ resource "aws_iam_user_policy" "new-service-account" {
 Generate new authentication tokens for downstream
 infra deployment
 */
-resource "aws_iam_access_key" "service-account-key" {
+resource "aws_iam_access_key" "this" {
   provider   = aws.accountgen
-  depends_on = [aws_iam_user_policy.new-service-account]
+  depends_on = [aws_iam_user_policy.this]
 
-  user       = aws_iam_user.new-service-account.name
+  user       = aws_iam_user.this.name
 }
 
 resource "time_sleep" "access-key-propogation" {
-  depends_on      = [aws_iam_access_key.service-account-key]
+  depends_on      = [aws_iam_access_key.this]
 
   create_duration = "60s"
 }

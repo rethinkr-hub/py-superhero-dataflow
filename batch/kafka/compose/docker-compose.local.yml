@@ -21,6 +21,7 @@ services:
       - KAFKA_HOST=kafka
       - WORKER_CHANNEL=lib.server.game
     env_file:
+      - ../env/kafka.env
       - ../env/local.env
     command: ["python", "worker_lib_server_game.py"]
     depends_on:
@@ -35,6 +36,7 @@ services:
       - KAFKA_HOST=kafka
       - WORKER_CHANNEL=lib.server.lobby
     env_file:
+      - ../env/kafka.env
       - ../env/local.env
     command: ["python", "worker_lib_server_lobby.py"]
     depends_on:
@@ -51,6 +53,7 @@ services:
       - KAFKA_HOST=kafka
       - LOGGER_MODULE=kafka
     env_file:
+      - ../env/kafka.env
       - ../env/local.env
     depends_on:
       - redis
@@ -73,6 +76,7 @@ services:
   superhero_nginx:
     image: python/datasim/superhero/nginx
     env_file:
+      - ../env/kafka.env
       - ../env/local.env
     depends_on:
       - superhero_server
@@ -84,6 +88,7 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     env_file:
+      - ../env/kafka.env
       - ../env/local.env
     ports:
       - '${REDIS_PORT}:${REDIS_PORT}'
@@ -134,6 +139,7 @@ services:
     environment:
       - KAFKA_HOST=kafka
     env_file:
+      - ../env/kafka.env
       - ../env/local.env
     command: ["python", "./lib/utils/kafka/config.py"]
     depends_on:

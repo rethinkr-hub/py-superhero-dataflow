@@ -9,6 +9,7 @@ import uuid
 import os
 
 # Environment Variables
+AWS_PROFILE=os.getenv('AWS_PROFILE', 'datasim-profile')
 OUTPUT_DIR=os.getenv('OUTPUT_DIR', '/usr/local/data/datasim_superhero')
 OUTPUT_FS=os.getenv('OUTPUT_FS', 'LOCAL')
 
@@ -20,7 +21,7 @@ if OUTPUT_FS == 'GCP':
 
     import gcsfs
     
-    GCP_PROJECT_ID=os.getenv('GCP_PROJECT_ID', None)
+    GCP_PROJECT_ID=os.getenv('GOOGLE_CLOUD_PROJECT', None)
     GCP_TOKEN=os.getenv('GCP_TOKEN', 'google_default')
 
     assert(not GCP_PROJECT_ID is None)
@@ -36,7 +37,7 @@ elif OUTPUT_FS == 'AWS':
 
     import s3fs
 
-    filesystem = s3fs.S3FileSystem()
+    filesystem = s3fs.S3FileSystem(profile=AWS_PROFILE)
 
 elif OUTPUT_FS == 'AZURE':
     # Credentials DOC

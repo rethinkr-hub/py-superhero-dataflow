@@ -13,3 +13,8 @@ variable "contributor_user" {
   type        = string
   description = "User Name which is used for CLI Authentication"
 }
+
+variable "aws_cli_profile" {
+  type        = string
+  description = "AWS CLI Configure --profile name where credentials are stored"
+}
