@@ -12,3 +12,8 @@ output "service_account_member" {
   description = "Authenticated Service Account Member Details"
   value       = google_service_account.new-service-account.member
 }
+
+output "service_account_name" {
+  description = "Authenticated Service Account Name"
+  value       = google_service_account.new-service-account.name
+}
