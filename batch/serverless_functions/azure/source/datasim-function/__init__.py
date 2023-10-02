@@ -62,6 +62,7 @@ SCHEMA_LOG_META = pa.schema({
 SCHEMA_LIB_SERVER_LOBBY = pa.schema({
     'etl_id': pa.utf8(),
     'msg_id': pa.utf8(),
+    'timestamp': pa.timestamp('s'),
     'game_token': pa.utf8(),
     'user_token': pa.utf8(),
     'superhero_id': pa.uint16(),
