@@ -1,0 +1,4 @@
+watchdog
+pyarrow
+ffspec
+gzip
