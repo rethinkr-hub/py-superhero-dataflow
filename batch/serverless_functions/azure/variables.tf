@@ -1,14 +1,5 @@
-variable "subscription_id" {
-  type = string
-  description = "Existing Azure Subscription ID"
-}
-
-variable "tenant_id" {
-  type = string
-  description = "Azure Tenant ID"
-}
-
-variable "contributor_upn" {
+variable "azure_region" {
   type        = string
-  description = "User Principal Name which is used for CLI Authentication"
+  description = "Azure Provier Region"
+  default     = "East US"
 }

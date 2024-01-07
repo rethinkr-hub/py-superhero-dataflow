@@ -12,3 +12,9 @@ variable "function_bucket_connection" {
   type        = string
   description = "Azure Functions Storage Account Connection String"
 }
+
+variable "function_sas_token_expiry" {
+  type        = string
+  description = "Function ZIP SAS Token Relative Expiry Time"
+  default     = "24h"
+}

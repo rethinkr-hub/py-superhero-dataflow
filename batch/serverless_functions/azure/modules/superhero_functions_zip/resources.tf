@@ -10,6 +10,10 @@ terraform{
   required_providers {
     azurerm = {
       source = "hashicorp/azurerm"
+      version = "~>3.86"
+      configuration_aliases = [
+        azurerm.auth_session,
+      ]
     }
   }
 }
@@ -39,6 +43,8 @@ data "archive_file" "this" {
 
 /* Upload the Zip package to Functions Bucket */
 resource "azurerm_storage_blob" "this" {
+  provider               = azurerm.auth_session
+
   name                   = "function.zip"
   storage_account_name   = var.function_bucket_name
   storage_container_name = var.function_container_name
@@ -54,12 +60,14 @@ requires SAS Token to authenticate and download from
 within Azure Function
 */
 data "azurerm_storage_account_blob_container_sas" "this" {
+  provider          = azurerm.auth_session
+
   connection_string = var.function_bucket_connection
   container_name    = var.function_container_name
   https_only        = true
 
   start  = timestamp()
-  expiry = timeadd(timestamp(), "1h")
+  expiry = timeadd(timestamp(), var.function_sas_token_expiry)
 
   permissions {
     read   = true

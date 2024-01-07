@@ -7,6 +7,10 @@ terraform{
   required_providers {
     azurerm = {
       source = "hashicorp/azurerm"
+      version = "~>3.86"
+      configuration_aliases = [
+        azurerm.auth_session,
+      ]
     }
   }
 }
@@ -19,6 +23,8 @@ and Performance.
 Note: Free Tier is no longer an option
 */
 resource "azurerm_service_plan" "this" {
+  provider            = azurerm.auth_session
+
   name                = var.service_plan_name
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
@@ -32,6 +38,8 @@ Configure Application Insights to monitor Function
 executions and logs. Not configured by default
 */
 resource "azurerm_application_insights" "this" {
+  provider            = azurerm.auth_session
+
   name                = "${var.service_plan_name}-app-insights"
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
@@ -57,6 +65,8 @@ https://stackoverflow.com/questions/67750337/python-projects-are-not-supported-o
 https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings
 */
 resource "azurerm_linux_function_app" "this" {
+  provider            = azurerm.auth_session
+  
   name                = var.function_name
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
