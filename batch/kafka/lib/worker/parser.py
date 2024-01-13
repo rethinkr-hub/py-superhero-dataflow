@@ -9,7 +9,6 @@ import uuid
 import os
 
 # Environment Variables
-AWS_PROFILE=os.getenv('AWS_PROFILE', 'datasim-profile')
 OUTPUT_DIR=os.getenv('OUTPUT_DIR', '/usr/local/data/datasim_superhero')
 OUTPUT_FS=os.getenv('OUTPUT_FS', 'LOCAL')
 
@@ -36,6 +35,8 @@ elif OUTPUT_FS == 'AWS':
     # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
     import s3fs
+
+    AWS_PROFILE=os.getenv('AWS_PROFILE', 'datasim-profile')
 
     filesystem = s3fs.S3FileSystem(profile=AWS_PROFILE)
 
@@ -194,7 +195,7 @@ class ETL_Client:
 
     @property
     def end_time(self):
-        return self._start_time
+        return self._end_time
     
     @end_time.setter
     def end_time(self, end_time):

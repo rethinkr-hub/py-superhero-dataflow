@@ -104,6 +104,7 @@ class Kafka_Subscriber(object):
                     if not BATCH_CONTINUOUS or topic_state._run_counts[tp][tp.partition] > BATCH_SIZE:
                         self._end_func()
                         topic_state._run_counts[tp] = Counter({tp.partition: 0})
+                        self._start_func()
                 
                 runs+=1
 
