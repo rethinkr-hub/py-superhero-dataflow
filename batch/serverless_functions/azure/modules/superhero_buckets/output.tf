@@ -12,3 +12,8 @@ output "bucket_connection" {
   description = "Azure Storage Bucket Connection Key"
   value       = azurerm_storage_account.this.primary_connection_string
 }
+
+output "bucket_dfs_host" {
+  description = "Azure Storage Bucket Primary DFS Host Connection String"
+  value = azurerm_storage_account.this.primary_dfs_host
+}
